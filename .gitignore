@@ -1,0 +1,13 @@
+venv/*
+venv/bin/python2.7/*
+*.pyc
+*.html~
+./test.py
+static/Uploads/*
+files/*
+refFiles/*
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
