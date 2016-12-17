@@ -1,13 +1,13 @@
 CREATE TABLE `amgen`.`LoginData` (
-  `Username` VARCHAR(45) NULL,
+  `Username` VARCHAR(45) UNIQUE,
   `Password` VARCHAR(45) NULL,
   `FirstName` VARCHAR(45) NULL,
   `LastName` VARCHAR(45) NULL,
-  `UserType` VARCHAR(45) NOT NULL DEFAULT 'Student'
+  `UserType` VARCHAR(45) NOT NULL DEFAULT 'Student',
   PRIMARY KEY (`Username`));
   
 CREATE TABLE `amgen`.`studentData` (
-  `Username` VARCHAR(45) NULL,
+  `Username` VARCHAR(45) UNIQUE,
   `Password` VARCHAR(45) NULL,
   `FirstName` VARCHAR(45) NULL,
   `LastName` VARCHAR(45) NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `amgen`.`studentData` (
   `CampusZipCode` INT NULL,
   `HomeCity` VARCHAR(45) NULL,
   `HomeState` VARCHAR(45) NULL,
-  `Gender` VARCHAR(1) NULL,
+  `Gender` VARCHAR(45) NULL,
   `Ethnicity` VARCHAR(45) NULL,
   `CitizenshipStatus` VARCHAR(45) NULL,
   `MotherDegree` VARCHAR(45) NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `amgen`.`studentData` (
   `HowDidYouHear` VARCHAR(250) NULL,
   `AnyOtherAmgenScholarsSite` VARCHAR(5) NULL,
   `YesOtherAmgenScholarsSite` VARCHAR(100) NULL,
-  `PastAmgenScholarParticipation` VARCHAR(5) NULL,
+  `PastAmgenScholarParticipation` VARCHAR(45) NULL,
   `OriginalResearchPerformed` VARCHAR(5) NULL,
   `CanArriveAtColumbiaMemorialDay` VARCHAR(5) NULL,
   `ArriveAtColumbiaComments` VARCHAR(200) CHARACTER SET 'dec8' NULL,
@@ -76,7 +76,7 @@ CREATE TABLE `amgen`.`studentData` (
 CREATE TABLE `amgen`.`References` (
   `Username` VARCHAR(24) NOT NULL,
   `Name` VARCHAR(100) NULL,
-  `Email` VARCHAR(100) NULL,
+  `Email` VARCHAR(100) UNIQUE,
   `Status` VARCHAR(30) NULL,
   `ReferalFilePath` VARCHAR(500) NULL,
   PRIMARY KEY (`UserName`,`Email`));
@@ -88,7 +88,7 @@ CREATE TABLE `amgen`.`Courses` (
   `Grade` VARCHAR(5) NULL,
   PRIMARY KEY (`UserId`, `Title`));
 
-Insert into amgen.LoginData(Username,Password,UserType) values ('admin','temp','Admin')
+Insert into amgen.LoginData(Username,Password,UserType) values ('admin','temp','Admin');
 
 CREATE TABLE `amgen`.`Mentors` (
   `Id` INT NOT NULL,
