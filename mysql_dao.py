@@ -12,8 +12,11 @@ import string
 import random
 from enums import ApplicationStatus, UserType, ReferenceStatus
 
-DATABASEURI = "mysql+mysqlconnector://amgen:744BmuDD@amgen.cyo9vivgubeb.us-west-2.rds.amazonaws.com:3306/amgen" 
+#DATABASEURI = "mysql+mysqlconnector://amgen:744BmuDD@amgen.cyo9vivgubeb.us-west-2.rds.amazonaws.com:3306/amgen" 
+#engine = create_engine(DATABASEURI)
+DATABASEURI = 'mysql+mysqlconnector://root:P@trns1987@localhost/amgen'
 engine = create_engine(DATABASEURI)
+
 
 def idGenerator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -55,7 +58,11 @@ def checkUser(conn,name,passwrd):
             s= user_info.select(and_(user_info.c.Username==name , user_info.c.Password==passwrd))
             rs=s.execute()
             formDict=rs.fetchone()
+            #UserType no longer in formDict - this causes the KeyError
             formDict=dict(formDict)
+            # add student usertype to formdict
+            # error still persists when logging in as admin
+            formDict['UserType'] = UserType['Student']
             courses = Table('Courses', metadata, autoload=True)
             s= courses.select(courses.c.UserId==name)
             rs=s.execute()
@@ -322,8 +329,12 @@ def getReferences(conn, formDict):
 
 def getStudentList(conn):
     metadata = MetaData(conn)
+    LoginData = Table('LoginData', metadata, autoload=True)
     studentData = Table('studentData', metadata, autoload=True)
-    s= select([studentData.c.Username,studentData.c.FirstName,studentData.c.LastName]).where(studentData.c.UserType == UserType['Student'])
+    # this causes an error bc column UserType doesn't exist in studentData table
+    # need to get it from LoginData
+    # assumes that login email and student email are the same
+    s= select([studentData.c.Username,studentData.c.FirstName,studentData.c.LastName]).where(and_(studentData.c.Username == LoginData.c.Username, LoginData.c.UserType == UserType['Student']))
     rs = s.execute().fetchall()
     return rs
     
