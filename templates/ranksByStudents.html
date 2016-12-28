@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}AMGEN Online Application{% endblock %}
+{% block content %}
+    <div>
+    <!--  need to make it sorted -->
+	{% for item in mentorsAndStudents %}
+			<li>{{ item['mentor'] ~ ' ' }}
+			{% for student in item['first'] %}
+				{{ student['fn'] ~ ' ' ~ student['ln'] ~ ' ' ~ '1' }}
+			{% endfor %}
+			{% for student in item['second'] %}
+				{{ student['fn'] ~ ' ' ~ student['ln'] ~ ' ' ~ '2' }}
+			{% endfor %}
+			{% for student in item['third'] %}
+				{{ student['fn'] ~ ' ' ~ student['ln'] ~ ' ' ~ '3' }}
+			{% endfor %}
+			{% for student in item['fourth'] %}
+				{{ student['fn'] ~ ' ' ~ student['ln'] ~ ' ' ~ '4' }}
+			{% endfor %}
+			{% for student in item['fifth'] %}
+				{{ student['fn'] ~ ' ' ~ student['ln'] ~ ' ' ~ '5' }}
+			{% endfor %}</li>
+	{% endfor %}
+    </div>
+{% endblock %}

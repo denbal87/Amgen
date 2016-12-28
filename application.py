@@ -504,10 +504,8 @@ def getRefPath(username):
 # testing displaying students
 @application.route('/rankings')
 def rankings():
-  dataArray = mysql_dao.loadStudents(dbcon)
-  mentors = dataArray[0]
-  mentorsAndStudents = dataArray[1]
-  return render_template('foo.html', mentors = mentors, mentorsAndStudents = mentorsAndStudents)         
+  mentorsAndStudents = mysql_dao.loadStudents(dbcon)
+  return render_template('ranksByStudents.html', mentorsAndStudents = mentorsAndStudents)         
 
 @application.route('/updateProfileByAdmin',methods=['POST'])
 def updateProfileByAdmin():

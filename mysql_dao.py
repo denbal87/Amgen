@@ -358,26 +358,68 @@ def getReferralPath(conn, username):
 # load students for admin to see who selected which professor
 # returns a list of mentors and a dict of pairs
 def loadStudents(conn):
-    mentorsAndStudents = []
     #array of dictionaries
     matchArray = []
     metadata = MetaData(conn)
     mentors = getMentorsList(conn)
     students = Table('studentData', metadata, autoload=True)
-    s= select([students.c.Username,students.c.FirstName,students.c.LastName,
-        students.c.Mentor1, students.c.Mentor2, students.c.Mentor3, students.c.Mentor4, students.c.Mentor5])
+    s= select([students.c.Mentor1, students.c.Mentor2, students.c.Mentor3,
+     students.c.Mentor4, students.c.Mentor5, students.c.Username,students.c.FirstName,students.c.LastName])
     # rs is a list of tuples with student data
     students = s.execute().fetchall()
     for mentor in mentors:
+        # lists containing students based on how they ranked the mentor
+        first = []
+        second = []
+        third  =[]
+        fourth = []
+        fifth = []
+        MENTOR1_INDEX = 0
+        MENTOR2_INDEX = 1
+        MENTOR3_INDEX = 2
+        MENTOR4_INDEX = 3
+        MENTOR5_INDEX = 4
+        USERNAME_INDEX = 5
+        FN_INDEX = 6
+        LN_INDEX = 7
         for student in students:
-            # iterate through the mentors in the students tuple
-            for i in range(3,8):
-                if student[i] == mentor:
-                    # create array of dicts
-                    matchArray.append({'mentor' : mentor,
-                        'studentName' : student[1],
-                        'studentLastName' : student[2],
-                        'username' : student[0],
-                        'rank' : i-2
-                    })
-    return [mentors, matchArray]
+            # iterate through the students and save their data to a corresponding list
+            if student[MENTOR1_INDEX] == mentor:
+                # append the student data to the list
+                first.append({'username' : student[USERNAME_INDEX],
+                    'fn' : student[FN_INDEX],
+                    'ln' :student[LN_INDEX]})
+            elif student[MENTOR2_INDEX] == mentor:
+                # append the student data to the list
+                second.append({'username' : student[USERNAME_INDEX],
+                    'fn' : student[FN_INDEX],
+                    'ln' :student[LN_INDEX]})
+            elif student[MENTOR3_INDEX] == mentor:
+                # append the student data to the list
+                third.append({'username' : student[USERNAME_INDEX],
+                    'fn' : student[FN_INDEX],
+                    'ln' :student[LN_INDEX]})
+            elif student[MENTOR4_INDEX] == mentor:
+                # append the student data to the list
+                fourth.append({'username' : student[USERNAME_INDEX],
+                    'fn' : student[FN_INDEX],
+                    'ln' :student[LN_INDEX]})
+            elif student[MENTOR5_INDEX] == mentor:
+                # append the student data to the list
+                fifth.append({'username' : student[USERNAME_INDEX],
+                    'fn' : student[FN_INDEX],
+                    'ln' :student[LN_INDEX]})
+        if first == second == third == fourth == fifth == []:
+            continue
+        else:
+            matchArray.append({
+                'mentor' : mentor,
+                'first' : first,
+                'second' : second,
+                'third' : third,
+                'fourth' : fourth,
+                'fifth' : fifth
+            })
+        # matchArray is in the form [{'mentor : Mentor', first : [{...}, {...}],
+        # second : [{...}, {...}] ... ]
+    return matchArray
