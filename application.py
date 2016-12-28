@@ -113,6 +113,7 @@ def checkUsername():
   session['logged_in'] = True
   session['user']=formDict
 
+  # need to account for rejected application
   if formDict['UserType'] == UserType['Student']: 
       if formDict['ApplicationStatus'] == ApplicationStatus['IncompleteApplication']:
           universityList = mysql_dao.getUniversityList(dbcon)          
@@ -287,7 +288,7 @@ def addFirstForm():
     elif request.form['submitButton'] == 'Save':
         universityList = mysql_dao.getUniversityList(dbcon)
         return render_template('first.html',formDict=formDict,universityList=universityList)
-    elif request.form['submitButton'] == 'Logout':
+    elif request.form['submitButton'] == 'Save and Logout':
         session['logged_in']=False
         session.pop('user')
         return render_template('login.html')
@@ -499,7 +500,14 @@ def getRefPath(username):
        i = i+1
    print(formDict)
    return formDict
-            
+
+# testing displaying students
+@application.route('/rankings')
+def rankings():
+  dataArray = mysql_dao.loadStudents(dbcon)
+  mentors = dataArray[0]
+  mentorsAndStudents = dataArray[1]
+  return render_template('foo.html', mentors = mentors, mentorsAndStudents = mentorsAndStudents)         
 
 @application.route('/updateProfileByAdmin',methods=['POST'])
 def updateProfileByAdmin():
@@ -681,7 +689,7 @@ def updateProfileByAdmin():
     
 if __name__ == "__main__":
   application.secret_key = os.urandom(24)
-  application.run(threaded=True)
+  application.run(debug=True, threaded=True)
 
   
 def xstr(s):
