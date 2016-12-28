@@ -354,5 +354,30 @@ def getReferralPath(conn, username):
     filename=[item[0] for item in fs]
     #print(filename)
     return filename
-      
 
+# load students for admin to see who selected which professor
+# returns a list of mentors and a dict of pairs
+def loadStudents(conn):
+    mentorsAndStudents = []
+    #array of dictionaries
+    matchArray = []
+    metadata = MetaData(conn)
+    mentors = getMentorsList(conn)
+    students = Table('studentData', metadata, autoload=True)
+    s= select([students.c.Username,students.c.FirstName,students.c.LastName,
+        students.c.Mentor1, students.c.Mentor2, students.c.Mentor3, students.c.Mentor4, students.c.Mentor5])
+    # rs is a list of tuples with student data
+    students = s.execute().fetchall()
+    for mentor in mentors:
+        for student in students:
+            # iterate through the mentors in the students tuple
+            for i in range(3,8):
+                if student[i] == mentor:
+                    # create array of dicts
+                    matchArray.append({'mentor' : mentor,
+                        'studentName' : student[1],
+                        'studentLastName' : student[2],
+                        'username' : student[0],
+                        'rank' : i-2
+                    })
+    return [mentors, matchArray]
